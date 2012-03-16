@@ -53,21 +53,21 @@
       (skip-whitespace port))))
 
 (define (in-port-until port reader done?)
-  (make-do-sequence (lambda ()
+  (make-do-sequence (λ ()
                       (values reader
-                              (lambda (port) port)
+                              (λ (port) port)
                               port
-                              (lambda (port)
+                              (λ (port)
                                 (not (done? port)))
-                              (lambda values #t)
-                              (lambda (port . values) #t)))))
+                              (λ values #t)
+                              (λ (port . values) #t)))))
 
 (define (read/hash port)
   (expect (read-char port) #\{)
   (skip-whitespace port)
   (begin0 (for/hasheq ([(key value)
                         (in-port-until port
-                                       (lambda (port)
+                                       (λ (port)
                                          (let ([key (read/string port)])
                                            (unless (string? key)
                                              (error 'read "expected: string, got: ~v" key))
@@ -78,7 +78,7 @@
                                              (skip-whitespace port)
                                              (expect (peek-char port) #\, #\})
                                              (values (string->symbol key) value))))
-                                       (lambda (port)
+                                       (λ (port)
                                          (eq? (peek-char port) #\})))])
             (when (eq? (peek-char port) #\,)
               (read-char port))
@@ -91,12 +91,12 @@
   (skip-whitespace port)
   (begin0 (for/list ([value
                       (in-port-until port
-                                     (lambda (port)
+                                     (λ (port)
                                        (skip-whitespace port)
                                        (begin0 (read-json port)
                                                (skip-whitespace port)
                                                (expect (peek-char port) #\, #\])))
-                                     (lambda (port)
+                                     (λ (port)
                                        (eq? (peek-char port) #\])))])
             (when (eq? (peek-char port) #\,)
               (read-char port))
@@ -107,7 +107,7 @@
   (expect (read-char port) #\")
   (begin0 (list->string
            (for/list ([ch (in-port-until port
-                                         (lambda (port)
+                                         (λ (port)
                                            (let ([ch (read-char port)])
                                              (when (eof-object? ch)
                                                (error 'read "unexpected EOF"))
@@ -127,7 +127,7 @@
                                                      [(#\u) (unescape (read-string 4 port))]
                                                      [else esc]))
                                                  ch)))
-                                         (lambda (port)
+                                         (λ (port)
                                            (eq? (peek-char port) #\")))])
              ch))
           (expect (read-char port) #\")))
@@ -152,7 +152,7 @@
 (define (read/digits port)
   (let ([digits (for/list ([digit (in-port-until port
                                                  read-char
-                                                 (lambda (port)
+                                                 (λ (port)
                                                    (let ([ch (peek-char port)])
                                                      (or (eof-object? ch)
                                                          (not (or
