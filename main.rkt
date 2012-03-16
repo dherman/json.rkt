@@ -1,5 +1,4 @@
 #lang racket/base
-(require (only-in scheme/base [read scheme:read] [write scheme:write]))
 (provide read-json write-json jsexpr->json json->jsexpr jsexpr?)
 
 (define (write-json json [port (current-output-port)])
@@ -22,9 +21,9 @@
        (write-json value port))
      (display "]" port)]
     [(or (string? json) (and (number? json) (or (integer? json) (inexact? json))))
-     (scheme:write json port)]
-    [(boolean? json) (scheme:write (if json 'true 'false) port)]
-    [(null-jsexpr? json) (scheme:write 'null port)]
+     (write json port)]
+    [(boolean? json) (write (if json 'true 'false) port)]
+    [(null-jsexpr? json) (write 'null port)]
     [else (error 'json "bad json value: ~v" json)]))
 
 (define (read-json [port (current-input-port)])
