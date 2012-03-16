@@ -1,0 +1,9 @@
+The following json files are part of JSON Checker
+http://www.json.org/JSON_checker/ test suite and can be downloaded
+from http://www.json.org/JSON_checker/test.zip They do not appear to
+have a license, and I assume they are the work of Douglas Crockford.
+
+pass1.json
+pass2.json
+pass3.json
+
