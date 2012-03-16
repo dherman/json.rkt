@@ -88,6 +88,7 @@
 
 (define (read/list port)
   (expect (read-char port) #\[)
+  (skip-whitespace port)
   (begin0 (for/list ([value
                       (in-port-until port
                                      (lambda (port)
@@ -154,7 +155,9 @@
                                                  (lambda (port)
                                                    (let ([ch (peek-char port)])
                                                      (or (eof-object? ch)
-                                                         (not (char-numeric? ch))))))])
+                                                         (not (or
+                                                               (char-numeric? ch)
+                                                               (char=? #\. ch)))))))])
                   digit)])
     (when (and (null? digits) (eof-object? (peek-char port)))
       (error 'read "unexpected EOF"))
